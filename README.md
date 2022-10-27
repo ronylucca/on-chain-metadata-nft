@@ -10,4 +10,6 @@ npx hardhat test
 REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
+
+contract= 0x802829b9AB85f2D2c3B8310beA0a8edfe3eeFf6D
 ```

@@ -1,15 +1,14 @@
 // hardhat.config.js
 
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-waffle");
-require("@nomiclabs/hardhat-etherscan");
 require("dotenv").config()
+require("@nomiclabs/hardhat-ethers");
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
 const GOERLI_URL = process.env.GOERLI_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const MUMBAI_URL = process.env.MUMBAI_URL
 
 console.log(GOERLI_URL);
 
