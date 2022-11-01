@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
+import "hardhat/console.sol";
 
 
 contract ChainBattles is ERC721URIStorage {
@@ -14,18 +15,29 @@ contract ChainBattles is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    mapping(uint256 => uint256) public tokenIdToLevels; 
+     struct Character{
+        uint256 level;
+        uint256 speed;
+        uint256 strength;
+        uint256 life;
+    }
+
+    mapping(uint256 => Character) public tokenIdToCharacter; 
 
     constructor() ERC721("Chain Battles", "CBTLS"){}
 
-    function generateCharacter(uint256 tokenId) public returns(string memory){
+    function generateCharacter(uint256 tokenId) public view returns(string memory){
+
 
     bytes memory svg = abi.encodePacked(
         '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
         '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
         '<rect width="100%" height="100%" fill="black" />',
-        '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior",'</text>',
-        '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Levels: ",getLevels(tokenId),'</text>',
+        '<text x="50%" y="15%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior",'</text>',
+        '<text x="45%" y="25%" class="base" dominant-baseline="middle" text-anchor="middle">', "Level: ",tokenIdToCharacter[tokenId].level.toString(),'</text>',
+        '<text x="45%" y="45%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",tokenIdToCharacter[tokenId].speed.toString(),'</text>',
+        '<text x="45%" y="65%" class="base" dominant-baseline="middle" text-anchor="middle">', "Strength: ",tokenIdToCharacter[tokenId].strength.toString(),'</text>',
+        '<text x="45%" y="85%" class="base" dominant-baseline="middle" text-anchor="middle">', "Life: ",tokenIdToCharacter[tokenId].life.toString(),'</text>',
         '</svg>'
     );
     return string(
@@ -36,11 +48,6 @@ contract ChainBattles is ERC721URIStorage {
     );
 }
 
-    function getLevels(uint256 tokenId) public view returns(string memory){
-        uint256 levels = tokenIdToLevels[tokenId];
-        return levels.toString();
-
-    }
 
     function getTokenURI(uint256 tokenId) public returns (string memory){
         bytes memory dataURI = abi.encodePacked(
@@ -61,16 +68,21 @@ contract ChainBattles is ERC721URIStorage {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
-        tokenIdToLevels[newItemId] = 0;
+        tokenIdToCharacter[newItemId] = Character(random(100),random(100),random(1000),random(1000));
+        console.log("Character created ID: %d , level %d:  ", newItemId, random(100));
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
 
     function train(uint256 tokenId) public {
         require(_exists(tokenId), "Please use an existing token");
         require(ownerOf(tokenId) == msg.sender, "You must own this token to train it");
-        uint256 currentLevel = tokenIdToLevels[tokenId];
-        tokenIdToLevels[tokenId] = currentLevel + 1;
+        tokenIdToCharacter[tokenId].level = tokenIdToCharacter[tokenId].level + 1;
         _setTokenURI(tokenId, getTokenURI(tokenId));
+    }
+
+    function random(uint number) public view returns(uint){
+        return uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty,  
+        msg.sender))) % number;
     }
 
 }
