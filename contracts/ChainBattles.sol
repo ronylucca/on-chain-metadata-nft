@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
-import "hardhat/console.sol";
 
 
 contract ChainBattles is ERC721URIStorage {
@@ -34,10 +33,10 @@ contract ChainBattles is ERC721URIStorage {
         '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
         '<rect width="100%" height="100%" fill="black" />',
         '<text x="50%" y="15%" class="base" dominant-baseline="middle" text-anchor="middle">',"Warrior",'</text>',
-        '<text x="45%" y="25%" class="base" dominant-baseline="middle" text-anchor="middle">', "Level: ",tokenIdToCharacter[tokenId].level.toString(),'</text>',
-        '<text x="45%" y="45%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",tokenIdToCharacter[tokenId].speed.toString(),'</text>',
-        '<text x="45%" y="65%" class="base" dominant-baseline="middle" text-anchor="middle">', "Strength: ",tokenIdToCharacter[tokenId].strength.toString(),'</text>',
-        '<text x="45%" y="85%" class="base" dominant-baseline="middle" text-anchor="middle">', "Life: ",tokenIdToCharacter[tokenId].life.toString(),'</text>',
+        '<text x="50%" y="35%" class="base" dominant-baseline="middle" text-anchor="middle">', "Level: ",tokenIdToCharacter[tokenId].level.toString(),'</text>',
+        '<text x="50%" y="45%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",tokenIdToCharacter[tokenId].speed.toString(),'</text>',
+        '<text x="50%" y="55%" class="base" dominant-baseline="middle" text-anchor="middle">', "Strength: ",tokenIdToCharacter[tokenId].strength.toString(),'</text>',
+        '<text x="50%" y="65%" class="base" dominant-baseline="middle" text-anchor="middle">', "Life: ",tokenIdToCharacter[tokenId].life.toString(),'</text>',
         '</svg>'
     );
     return string(
@@ -49,7 +48,7 @@ contract ChainBattles is ERC721URIStorage {
 }
 
 
-    function getTokenURI(uint256 tokenId) public returns (string memory){
+    function getTokenURI(uint256 tokenId) public view returns (string memory){
         bytes memory dataURI = abi.encodePacked(
             '{',
                 '"name": "Chain Battles #', tokenId.toString(), '",',
@@ -68,8 +67,7 @@ contract ChainBattles is ERC721URIStorage {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
-        tokenIdToCharacter[newItemId] = Character(random(100),random(100),random(1000),random(1000));
-        console.log("Character created ID: %d , level %d:  ", newItemId, random(100));
+        tokenIdToCharacter[newItemId] = Character(random(100),random(50),random(1000),random(250));
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
 
